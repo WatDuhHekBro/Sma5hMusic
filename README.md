@@ -6,6 +6,14 @@ This tool is highly experimental and may not always work as expected.
 * **This mod is not safe online!**
 * Suggestions are welcome. Please create an issue for it.
 
+## Linux Notes
+- For all `.csproj` files that require it, [preventing weird reference issues](https://stackoverflow.com/a/65161916): `<GenerateErrorForMissingTargetingPacks>false</GenerateErrorForMissingTargetingPacks>`
+- To build the program: `dotnet publish -c Release`
+- To run the program: `DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 DOTNET_ROOT=<path>/dotnet-sdk-3.1.426-linux-x64/ ./Sma5hMusic.GUI`
+- [3.1 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/3.1)
+- [You need Globalization Invariant because](https://stackoverflow.com/a/64370938): `Couldn't find a valid ICU package installed on the system.`
+- If you get `No usable version of libssl was found`, then you need to have some version of OpenSSL 1.x installed on your system, as older .NET versions don't support OpenSSL 3.x.
+
 ## Thanks & Repos of the different tools
 1.  Research: soneek
 2.  Testing: Demonslayerx8, Segtendo
