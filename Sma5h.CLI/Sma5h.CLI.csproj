@@ -9,7 +9,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <None Remove="appsettings.json" />
   </ItemGroup>
@@ -36,12 +36,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Sma5h\Mods\Sma5h.Mods.Music\Sma5h.Mods.Music.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="VGAudioCli">
-      <HintPath>..\Tools\VGAudioCli.exe</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>

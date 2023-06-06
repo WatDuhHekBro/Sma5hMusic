@@ -179,7 +179,7 @@ namespace Sma5h.Mods.Music.Services
         private void EnsureRequiredFilesAreFound()
         {
             if (!File.Exists(_nus3AudioExeFile))
-                throw new Exception($"nus3audio.exe: {_nus3AudioExeFile} could not be found.");
+                throw new Exception($"nus3audio: {_nus3AudioExeFile} could not be found.");
 
             if (!File.Exists(_nus3BankTemplateFile))
                 throw new Exception($"template.nus3bank: {_nus3BankTemplateFile} could not be found.");

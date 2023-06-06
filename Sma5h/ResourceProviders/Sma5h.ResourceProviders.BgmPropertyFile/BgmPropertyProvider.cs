@@ -112,7 +112,7 @@ namespace Sma5h.ResourceProviders
         private void EnsureRequiredFilesAreFound()
         {
             if (!File.Exists(_bgmPropertyExeFile))
-                throw new Exception($"bgm-property.exe: {_bgmPropertyExeFile} could not be found.");
+                throw new Exception($"bgm-property: {_bgmPropertyExeFile} could not be found.");
 
             if (!File.Exists(_bgmPropertyHashFile))
                 throw new Exception($"bgm_hashes.txt: {_bgmPropertyHashFile} could not be found.");

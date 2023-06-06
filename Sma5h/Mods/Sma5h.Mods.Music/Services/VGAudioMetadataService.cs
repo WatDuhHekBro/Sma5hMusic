@@ -5,7 +5,6 @@ using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using VGAudio.Cli;
 
 namespace Sma5h.Mods.Music.Services
 {
