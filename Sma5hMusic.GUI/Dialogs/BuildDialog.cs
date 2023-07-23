@@ -266,7 +266,7 @@ namespace Sma5hMusic.GUI.Dialogs
                 Path.Combine(config.GameResourcesPath, "ui", "param", "database", "ui_bgm_db.prc"),
                 Path.Combine(config.GameResourcesPath, "ui", "param", "database", "ui_gametitle_db.prc"),
                 Path.Combine(config.GameResourcesPath, "ui", "param", "database", "ui_stage_db.prc"),
-                Path.Combine(config.ToolsPath, "VGAudioCli"),
+                Path.Combine(config.ToolsPath, "VGAudioCli.exe"),
                 Path.Combine(config.ToolsPath, "paracobNET.dll"),
                 Path.Combine(config.ToolsPath, "MsbtEditor.dll"),
                 Path.Combine(config.ToolsPath, "BgmProperty", "bgm_hashes.txt"),
