@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Sma5h.Interfaces;
+using Sma5h.Mods.Music.Helpers;
 using Sma5h.Mods.Music.Interfaces;
 using Sma5h.Mods.Music.Models;
 using System;
@@ -12,12 +15,17 @@ namespace Sma5h.Mods.Music.Services
     public class VGMStreamAudioMetadataService : IAudioMetadataService
     {
         private readonly ILogger _logger;
+		private readonly IProcessService _processService;
         private readonly IVGMMusicPlayer _vgmMusicPlayer;
+		private readonly IOptionsMonitor<Sma5hMusicOptions> _config;
+		private readonly string _vgaudiocliExeFile;
 
-        public VGMStreamAudioMetadataService(ILogger<IAudioMetadataService> logger, IVGMMusicPlayer vgmMusicPlayer)
+        public VGMStreamAudioMetadataService(ILogger<IAudioMetadataService> logger, IVGMMusicPlayer vgmMusicPlayer, IProcessService processService, IOptionsMonitor<Sma5hMusicOptions> config)
         {
             _logger = logger;
+			_processService = processService;
             _vgmMusicPlayer = vgmMusicPlayer;
+			_vgaudiocliExeFile = Path.Combine(config.CurrentValue.ToolsPath, MusicConstants.Resources.VGAUDIOCLI_EXE_FILE);
         }
 
         public async Task<AudioCuePoints> GetCuePoints(string inputFile)
@@ -84,11 +92,27 @@ namespace Sma5h.Mods.Music.Services
                 if (outputMediaFile.EndsWith("lopus"))
                 {
                     //Special tags for opus
-                    Converter.RunConverterCli(new string[] { "-i", inputMediaFile, "-o", outputMediaFile, "--opusheader", "Namco", "--cbr" });
+					try
+					{
+						_processService.RunProcess(_vgaudiocliExeFile, $"-i \"{inputMediaFile}\" -o \"{outputMediaFile}\" --opusheader Namco --cbr");
+					}
+					catch (Exception e)
+					{
+						_logger.LogError(e, "Error while converting file via VGAudioCli with special tags for OPUS");
+						return false;
+					}
                 }
                 else
                 {
-                    Converter.RunConverterCli(new string[] { "-i", inputMediaFile, "-o", outputMediaFile });
+					try
+					{
+						_processService.RunProcess(_vgaudiocliExeFile, $"-i \"{inputMediaFile}\" -o \"{outputMediaFile}\"");
+					}
+					catch (Exception e)
+					{
+						_logger.LogError(e, "Error while converting file via VGAudioCli");
+						return false;
+					}
                 }
             }
             Console.SetOut(oldValue);

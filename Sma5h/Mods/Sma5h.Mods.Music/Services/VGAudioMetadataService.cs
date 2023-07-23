@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Sma5h.Interfaces;
+using Sma5h.Mods.Music.Helpers;
 using Sma5h.Mods.Music.Interfaces;
 using Sma5h.Mods.Music.Models;
 using System;
@@ -11,10 +14,15 @@ namespace Sma5h.Mods.Music.Services
     public class VGAudioMetadataService : IAudioMetadataService
     {
         private readonly ILogger _logger;
+		private readonly IProcessService _processService;
+		private readonly IOptionsMonitor<Sma5hMusicOptions> _config;
+		private readonly string _vgaudiocliExeFile;
 
-        public VGAudioMetadataService(ILogger<IAudioMetadataService> logger)
+        public VGAudioMetadataService(ILogger<IAudioMetadataService> logger, IProcessService processService, IOptionsMonitor<Sma5hMusicOptions> config)
         {
             _logger = logger;
+			_processService = processService;
+			_vgaudiocliExeFile = Path.Combine(config.CurrentValue.ToolsPath, MusicConstants.Resources.VGAUDIOCLI_EXE_FILE);
         }
 
         public Task<AudioCuePoints> GetCuePoints(string inputFile)
@@ -27,7 +35,14 @@ namespace Sma5h.Mods.Music.Services
             using (var writer = new StringWriter(builder))
             {
                 Console.SetOut(writer);
-                Converter.RunConverterCli(new string[] { "-m", "-i", inputFile });
+				try
+				{
+					_processService.RunProcess(_vgaudiocliExeFile, $"-m -i \"{inputFile}\"");
+				}
+				catch (Exception e)
+				{
+					_logger.LogError(e, "Error while gathering audio metadata via VGAudioCli");
+				}
             }
             Console.SetOut(oldValue);
 
@@ -82,12 +97,28 @@ namespace Sma5h.Mods.Music.Services
                 Console.SetOut(writer);
                 if (outputMediaFile.EndsWith("lopus"))
                 {
-                    //Special tags for opus
-                    Converter.RunConverterCli(new string[] { "-i", inputMediaFile, "-o", outputMediaFile, "--opusheader", "Namco", "--cbr" });
+					//Special tags for opus
+					try
+					{
+						_processService.RunProcess(_vgaudiocliExeFile, $"-i \"{inputMediaFile}\" -o \"{outputMediaFile}\" --opusheader Namco --cbr");
+					}
+					catch (Exception e)
+					{
+						_logger.LogError(e, "Error while converting file via VGAudioCli with special tags for OPUS");
+						return false;
+					}
                 }
                 else
                 {
-                    Converter.RunConverterCli(new string[] { "-i", inputMediaFile, "-o", outputMediaFile });
+					try
+					{
+						_processService.RunProcess(_vgaudiocliExeFile, $"-i \"{inputMediaFile}\" -o \"{outputMediaFile}\"");
+					}
+					catch (Exception e)
+					{
+						_logger.LogError(e, "Error while converting file via VGAudioCli");
+						return false;
+					}
                 }
             }
             Console.SetOut(oldValue);
